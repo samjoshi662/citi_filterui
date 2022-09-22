@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSelectChange } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { ViewChild,AfterViewInit} from '@angular/core';
+import { MatSort ,Sort} from '@angular/material/sort';
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 export interface Transaction {
  
@@ -11,14 +15,25 @@ export interface Transaction {
   payeeName: string;
   payeeAccountNo: string;
   amount: number;
-  //validStatus: string;
-  // sanctionStatus: string;
+  validStatus: string;
+  sanctionStatus: string;
   // sanctionFailMessage: string;
   // validationFailMessage: string;
-
 }
 
-const ELEMENT_DATA: Transaction[] = [
+export interface EmpFilter {
+  name:string;
+  options:string[];
+  defaultValue:string;
+}
+
+export interface filterOption{
+  name:string;
+  value:string;
+  isdefault:boolean;
+}
+
+/* const ELEMENT_DATA: Transaction[] = [
   {
     transactionRefNo: "123456789001",
     valueDate: "2022-04-09",
@@ -27,8 +42,8 @@ const ELEMENT_DATA: Transaction[] = [
     payeeName: "SunainaPatil",
     payeeAccountNo: "200001020939",
     amount: 1256.0,
-    //validStatus: "Pass",
-    //sanctionStatus: "Pass",
+    validStatus: "Pass",
+    sanctionStatus: "Pass",
     // sanctionFailMessage: "Pass",
     // validationFailMessage: "Pass",
     
@@ -41,8 +56,8 @@ const ELEMENT_DATA: Transaction[] = [
       payeeName: "SunainaPatil",
       payeeAccountNo: "200001020939",
       amount: 1256.0,
-      //validStatus: "Fail",
-      // sanctionStatus: "Pass",
+      validStatus: "Fail",
+      sanctionStatus: "Pass",
       // sanctionFailMessage: "Pass",
       // validationFailMessage: "Pass",
       
@@ -53,7 +68,9 @@ const ELEMENT_DATA: Transaction[] = [
     payerAccountNo: "200001060111",
     payeeName: "MohiniChawal",
     payeeAccountNo: "200001520999",
-    amount: 329.0,    
+    amount: 329.0,  
+    validStatus: "Fail",
+    sanctionStatus: "Pass",  
 },
 {
     transactionRefNo: "123948589012",
@@ -62,9 +79,11 @@ const ELEMENT_DATA: Transaction[] = [
     payerAccountNo: "200001620999",
     payeeName: "AnandiGupta",
     payeeAccountNo: "200001020939",
-    amount: 10000.0,    
+    amount: 10000.0,   
+    validStatus: "Fail",
+    sanctionStatus: "Pass",  
 },
-{
+/* {
     transactionRefNo: "123456789112",
     valueDate: "2022-04-09",
     payerName: "VijSavrani",
@@ -117,7 +136,7 @@ const ELEMENT_DATA: Transaction[] = [
     payeeName: "KailashGupta",
     payeeAccountNo: "200001027999",
     amount: 9529.0,    
-},]
+}, ] */
    
 
 @Component({
@@ -125,16 +144,124 @@ const ELEMENT_DATA: Transaction[] = [
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
-export class TableComponent  {
+export class TableComponent implements AfterViewInit {
 
-  displayedColumns: string[] = ['transactionRefNo', 'valueDate', 'payerName', 'payerAccountNo', 'payeeName', 'payerAccountNo'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  ELEMENT_DATA: Transaction[] = [
+    {
+      transactionRefNo: "123456789001",
+      valueDate: "2022-04-09",
+      payerName: "KamalNathan",
+      payerAccountNo: "200001020141",
+      payeeName: "SunainaPatil",
+      payeeAccountNo: "200001020939",
+      amount: 1256.0,
+      validStatus: "Pass",
+      sanctionStatus: "Pass",
+      // sanctionFailMessage: "Pass",
+      // validationFailMessage: "Pass",
+      
+  },
+    {
+        transactionRefNo: "123456789001",
+        valueDate: "2022-04-09",
+        payerName: "KamalNathan",
+        payerAccountNo: "200001020141",
+        payeeName: "SunainaPatil",
+        payeeAccountNo: "200001020939",
+        amount: 1256.0,
+        validStatus: "Fail",
+        sanctionStatus: "Pass",
+        // sanctionFailMessage: "Pass",
+        // validationFailMessage: "Pass",
+        
+    },{
+      transactionRefNo: "156456789012",
+      valueDate: "2022-04-09",
+      payerName: "VimalSukumar",
+      payerAccountNo: "200001060111",
+      payeeName: "MohiniChawal",
+      payeeAccountNo: "200001520999",
+      amount: 329.0,  
+      validStatus: "Fail",
+      sanctionStatus: "Pass",  
+  },
+  {
+      transactionRefNo: "123948589012",
+      valueDate: "2022-04-09",
+      payerName: "KaranKumar",
+      payerAccountNo: "200001620999",
+      payeeName: "AnandiGupta",
+      payeeAccountNo: "200001020939",
+      amount: 10000.0,   
+      validStatus: "Fail",
+      sanctionStatus: "Pass",  
+  },
+  ]
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  displayedColumns: string[] = ['transactionRefNo', 'valueDate', 'payerName', 'payerAccountNo', 'payeeName', 'validStatus'];
+ 
+  empFilters: EmpFilter[]=[];
+ Validation: string[]=['All','Pass','Fail'];
+  Sanction: string[]=['All','Pass','Fail'];
+
+  defaultValue = "All";
+
+  filterDictionary= new Map<string,string>();
+
+  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  dataSourceFilters = new MatTableDataSource(this.ELEMENT_DATA);
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  ngAfterViewInit() {
+    this.dataSourceFilters.paginator = this.paginator;
+    this.dataSourceFilters.sort = this.sort;
   }
+
+  constructor(private _liveAnnouncer: LiveAnnouncer) {}
+
+  /** Announce the change in sort state for assistive technology. */
+  announceSortChange(sortState: Sort) {
+   
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
+  }
+
+  ngOnInit(): void {
+
+    this.empFilters.push({name:'validStatus',options:this.Validation,defaultValue:this.defaultValue});
+    this.empFilters.push({name:'sanctionStatus',options:this.Sanction,defaultValue:this.defaultValue});
+  
+    this.dataSourceFilters.filterPredicate = function (record,filter) {
+      debugger;
+      var map = new Map(JSON.parse(filter));
+      let isMatch = false;
+      for(let [key,value] of map){
+        isMatch = (value=="All") || (record[key as keyof Transaction] == value); 
+        if(!isMatch) return false;
+      }
+      return isMatch;
+    }
+    
+
+    
+  }
+
+  applyEmpFilter(ob:MatSelectChange,empfilter:EmpFilter) {
+
+    this.filterDictionary.set(empfilter.name,ob.value);
+
+
+    var jsonString = JSON.stringify(Array.from(this.filterDictionary.entries()));
+    
+    this.dataSourceFilters.filter = jsonString;
+    //console.log(this.filterValues);
+  }
+
+  
 }
 
 // export class TableBasicExample {

@@ -13,6 +13,7 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTableFilterComponent } from './mat-table-filter/mat-table-filter.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +22,8 @@ import { MatSortModule } from '@angular/material/sort';
     FooterComponent,
     FileUploadComponent,
     TableComponent,
-    DataTableComponent
+    DataTableComponent,
+    MatTableFilterComponent
   ],
   imports: [
     BrowserModule,

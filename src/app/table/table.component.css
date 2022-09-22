@@ -1,18 +1,27 @@
+
 table {
-    width: 100%;
+    width: 80%;
     column-gap: 10px;
+    margin-left: 150px;
+   
   }
 
   th, td {
     padding: 15px;
     text-align: left;
+    font-size: 16px;
   }
   th, td {
     border-bottom: 1px solid #ddd;
+    padding: 15px;
   }
-  tr:hover {background-color: rgb(96, 143, 186);}
-  tr:nth-child() {background-color: #f2f2f2;}
+  tr:hover {background-color: rgb(144, 167, 187);}
+  tr:nth-child() {background-color: #a3c0f4;}
   th {
-    background-color: #0476aa;
+    background-color: #2487ce;
     color: white;
   }
+
+  .mat-form-field-ripple{
+    background-color: #0476aa;
+  } 

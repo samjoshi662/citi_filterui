@@ -60,7 +60,8 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
   data: DataTableItem[] = EXAMPLE_DATA;
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
-  
+
+
   constructor() {
     super();
   }
@@ -115,9 +116,8 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
         case 'name': return compare(a.payeeName, b.payeeName, isAsc);
-        case 'id': return compare(+a.transactionRefNo, +b.transactionRefNo, isAsc);
-        case 'valueDate': return compare(+a.valueDate, +b.valueDate, isAsc);
-
+        /* case 'id': return compare(+a.transactionRefNo, +b.transactionRefNo, isAsc);
+        case 'valueDate': return compare(+a.valueDate, +b.valueDate, isAsc); */
         default: return 0;
       }
     });

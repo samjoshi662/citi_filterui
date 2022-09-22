@@ -1,6 +1,10 @@
 button:focus{
-    background:rgb(23, 97, 16);
+    background:#2487ce;
 }
 
 
 .button {background-color: #008CBA;} /* Blue */
+.button:hover{
+    background-color:#002ead;
+    transition: 0.7s;
+}

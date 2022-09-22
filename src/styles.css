@@ -132,12 +132,13 @@ body {
   
   #header .logo {
     font-size: 28px;
-    margin: 0;
+    margin-left: 0;
     padding: 0;
     line-height: 1;
     font-weight: 300;
     letter-spacing: 0.5px;
     font-family: "Poppins", sans-serif;
+    
   }
   
   #header .logo a {
@@ -149,7 +150,7 @@ body {
   }
 
   #header .logo1 img {
-    max-height: 90px;
+    max-height: 80px;
     margin-right: 6px;
   }
   
